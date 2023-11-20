@@ -18,7 +18,7 @@ steps:
       - cd test
       - echo "git 来了"
 
-  - name: build
+  - name: build-go
     image: golang
     commands:
       - echo -n ${docker_username} | sha256sum 
@@ -30,7 +30,7 @@ steps:
       - echo "走到这个地方了"
       - pwd
   
-  - name: docker
+  - name: docker-push-server
     image: plugins/docker
     settings:
       repo: registry.cn-beijing.aliyuncs.com/18392643987@163.com/test
@@ -43,7 +43,7 @@ steps:
       password:
         from_secret: docker_password
 services:
-  - name: docker
+  - name: docker-service
     image: tianon/docker
     volumes:
       - name: dockersock
