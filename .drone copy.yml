@@ -21,10 +21,7 @@ steps:
   - name: build
     image: golang
     commands:
-      - echo -n ${docker_username} | sha256sum 
-      - echo -n ${docker_password} | sha256sum 
-      - cd test 
-      - go mod download
+      - go mod .
       - go build -o test
       - go test
       - echo "走到这个地方了"
@@ -39,9 +36,21 @@ steps:
         - latest
       dockerfile: Dockerfile
       username: 
-        from_secret: docker_username
+        from_secret: 18392643987@163.com
       password:
-        from_secret: docker_password
+        from_secret: Zc994606871
+  #- name: docker
+  #  image: docker
+  #  commands:
+  #    - docker login --username=<your_aliyun_username> --password=<your_aliyun_password> <your_aliyun_registry>
+  #    - docker build -t <your_aliyun_registry>/<your_username>/<your_image>:${DRONE_COMMIT_SHA:0:8} .
+  #    - docker push <your_aliyun_registry>/<your_username>/<your_image>:${DRONE_COMMIT_SHA:0:8}
+  #  environment:
+  #    your_aliyun_username:
+  #      from_secret: aliyun_username
+  #    your_aliyun_password:
+  #      from_secret: aliyun_password
+
 services:
   - name: docker
     image: tianon/docker
