@@ -46,7 +46,7 @@ services:
   - name: docker-service
     image: tianon/docker
     volumes:
-      - name: dockersock
+      - name: dockersock  
         path: /var/run  
 
 volumes:
