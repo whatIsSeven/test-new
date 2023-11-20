@@ -18,7 +18,7 @@ steps:
       - cd test
       - echo "git 来了"
 
-  - name: build-go
+  - name: build-go-1
     image: golang
     commands:
       - echo -n ${docker_username} | sha256sum 
@@ -30,7 +30,7 @@ steps:
       - echo "走到这个地方了"
       - pwd
   
-  - name: docker-push-server
+  - name: docker-push-server-1
     image: plugins/docker
     settings:
       repo: registry.cn-beijing.aliyuncs.com/18392643987@163.com/test
