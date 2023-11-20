@@ -13,6 +13,7 @@ steps:
     commands:
       - git clone https://ku.hudiej.com/gonebadei/test.git
       - cd test
+      - echo "git 来了"
 
   - name: build
     image: golang
