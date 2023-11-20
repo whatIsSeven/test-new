@@ -43,7 +43,7 @@ steps:
       password:
         from_secret: docker_password
 services:
-  - name: docker-service
+  - name: docker_service_service
     image: tianon/docker
     volumes:
       - name: dockersock  
@@ -53,5 +53,3 @@ volumes:
   - name: dockersock
     host:
       path: /var/run
-
-
