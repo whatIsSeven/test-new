@@ -8,6 +8,11 @@ platform:
 steps:
 - name: test
   image: golang
+  environment:
+      DOCKER_USERNAME:
+          from_secret: docker_username
+      DOCKER_PASSWORK:
+          from_secret: docker_password
   commands:
-      - echo -n ${docker_username}
-      - echo -n ${docker_password} 
+      - echo -n $DOCKER_USERNAME
+      - echo -n $DOCKER_PASSWORK
