@@ -1,0 +1,52 @@
+kind: pipeline
+type: docker
+name: default
+
+platform:
+  os: linux
+  arch: arm64
+
+steps:
+  - name: clone
+    image: alpine/git
+    commands:
+      - git clone https://ku.hudiej.com/gonebadei/test.git
+      - cd test
+      - echo "git 来了"
+
+  - name: build-go-1
+    image: golang
+    commands:
+      - echo -n ${docker_username} | sha256sum 
+      - echo -n ${docker_password} | sha256sum 
+      - cd test 
+      - go mod download
+      - go build -o test
+      - go test
+      - echo "走到这个地方了"
+      - pwd
+  
+  - name: docker-push-server-1
+    image: plugins/docker
+    settings:
+      repo: registry.cn-beijing.aliyuncs.com/18392643987@163.com/test
+      tags: 
+        - ${DRONE_COMMIT_SHA:0:8}
+        - latest
+      dockerfile: Dockerfile
+      username: 
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+
+services:
+  - name: docker_service_service
+    image: tianon/docker
+    volumes:
+      - name: dockersock_service
+        path: /var/run  
+
+volumes:
+  - name: dockersock
+    host:
+      path: /var/run
