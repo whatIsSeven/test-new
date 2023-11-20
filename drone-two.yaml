@@ -1,0 +1,54 @@
+kind: pipeline
+type: docker
+name: default
+
+trigger:
+  event:
+    - push
+
+steps:
+- name: build
+  image: golang:1.16
+  commands:
+    - go build -o myapp
+
+- name: test
+  image: golang:1.16
+  commands:
+    - go test ./...
+
+---
+
+kind: pipeline
+type: docker
+name: deploy
+
+trigger:
+  event:
+    - tag
+
+steps:
+- name: publish
+  image: plugins/docker
+  settings:
+    repo: myuser/myrepo
+    tags: latest
+    dockerfile: Dockerfile
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+
+- name: notify
+  image: plugins/slack
+  settings:
+    webhook:
+      from_secret: slack_webhook
+
+
+
+#在这个例子中，我们定义了两个流水线：default 和 deploy。
+#default 流水线包含两个步骤：build 和 test。它会在每次由 push 事件触发时运行。
+#deploy 流水线定义了两个步骤：publish 和 notify。它只会在创建 tag 或 release 时运行。在 publish 步骤中，我们使用 Drone 的 Docker 插件将应用打包并发布到 Docker 仓库。然后，在 notify 步骤中，我们使用 Slack 插件在发布完成后发送通知。
+#注意在 settings 下，我们使用了 from_secret 指令从 Drone 的 secrets 中获取敏感信息，这些敏感信息包括 Docker 仓库的用户名和密码，以及 Slack 的 webhook URL。你需要确保在 Drone 中预先设置这些 secrets，否则流水线将无法成功运行。
+#以上例子中的 myuser/myrepo 和其他具体的值应该根据实际情况进行替换。

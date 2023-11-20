@@ -20,6 +20,8 @@ steps:
       - go mod .
       - go build -o test
       - go test
+      - echo "走到这个地方了"
+      - pwd
   
   - name: docker
     image: plugins/docker
