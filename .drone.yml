@@ -1,0 +1,12 @@
+kind: pipeline
+name: default
+
+platform:
+  os: linux
+  arch: arm64
+    
+steps:
+- name: test
+- commands:
+      - echo -n ${docker_username} | sha256sum 
+      - echo -n ${docker_password} | sha256sum
