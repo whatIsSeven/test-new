@@ -15,5 +15,5 @@ steps:
         from_secret: docker_password
   commands:
       - echo "hahah" 
-      - echo -n ${USERNAME_SECRET}
-      - echo -n ${PASSWORD_SECRET}
+      - echo -n $DOCKER_USERNAME
+      - echo -n $DOCKER_PASSWORD
