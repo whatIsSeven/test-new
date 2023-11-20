@@ -7,6 +7,6 @@ platform:
     
 steps:
 - name: test
-- commands:
+  commands:
       - echo -n ${docker_username} | sha256sum 
       - echo -n ${docker_password} | sha256sum
