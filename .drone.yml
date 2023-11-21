@@ -17,3 +17,14 @@ steps:
       - echo "hahah" 
       - echo -n $DOCKER_USERNAME
       - echo -n $DOCKER_PASSWORD
+- name: build-go-1
+  image: golang
+  commands:
+     - echo -n ${docker_username} | sha256sum
+     - echo -n ${docker_password} | sha256sum
+     - cd test
+     - go mod download
+     - go build -o test
+     - go test
+     - echo "走到这个地方了"
+     - pwd
