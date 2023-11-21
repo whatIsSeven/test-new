@@ -4,41 +4,41 @@ name: default
 platform:
   os: linux
   arch: arm64
-    
+
 steps:
-- name: test
-  image: golang
-  environment:
-    DOCKER_USERNAME:
+  - name: test
+    image: golang
+    environment:
+      DOCKER_USERNAME:
         from_secret: docker_username
-    DOCKER_PASSWORD:
+      DOCKER_PASSWORD:
         from_secret: docker_password
-  commands:
+    commands:
       - echo "hahah" 
       - echo -n $DOCKER_USERNAME
       - echo -n $DOCKER_PASSWORD
-- name: build-go-1
-  image: golang
-  commands:
-     - echo -n ${docker_username}
-     - echo -n ${docker_password} | sha256sum
-     - ls
-     - go mod download
-     - go build -o test
-     - echo "又来到了查看目录的地方了"
-     - ls
-     - echo "走到这个地方了"
-     - pwd
+  - name: build-go-1
+    image: golang
+    commands:
+      - echo -n ${docker_username}
+      - echo -n ${docker_password} | sha256sum
+      - ls
+      - go mod download
+      - go build -o test
+      - echo "又来到了查看目录的地方了"
+      - ls
+      - echo "走到这个地方了"
+      - pwd
 
-- name: docker-push-server-1
-  image: plugins/docker
-  settings:
-     repo: registry.cn-beijing.aliyuncs.com/18392643987@163.com/test
-     tags:
+  - name: docker-push-server-1
+    image: plugins/docker
+    settings:
+      repo: registry.cn-beijing.aliyuncs.com/18392643987@163.com/test
+      tags:
         - ${DRONE_COMMIT_SHA:0:8}
         - latest
-     dockerfile: Dockerfile
-     username:
+      dockerfile: Dockerfile
+      username:
         from_secret: docker_username
-     password:
+      password:
         from_secret: docker_password
