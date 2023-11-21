@@ -8,6 +8,12 @@ services:
   - name: docker
     image: docker:dind
     privileged: true
+    environment: 
+      DOCKER_TLS_CERTDIR: ""
+    commands: 
+      - sleep 5
+      - docker version
+      - docker info
     volumes: 
       - name: dockersock
         path: /var/run
@@ -43,15 +49,17 @@ steps:
       - export SHORT_SHA=$(echo ${DRONE_COMMIT_SHA} | cut -c 1-8)
       - echo ${SHORT_SHA}
   - name: build_and_push
-    image: docker:dind
+    image: docker
     environment: 
-      fDOCKER_HOST: unix:///var/run/docker.sock  # 通过这种方式连接到 Docker service
+      fDOCKER_HOST: tcp://docker:2376  # 通过这种方式连接到 Docker service
       DOCKER_USERNAME: 
         from_secret: docker_username
       DOCKER_PASSWORD: 
         from_secret: docker_passwordf
     commands: 
-      - docker  info
+      - sleep 15  # This is to give some time to the Docker daemon to start.
+      - docker -H tcp://docker:2375 version
+      - docker -H tcp://docker:2375 info
       - echo ${DOCKER_PASSWORD} | docker login --username=18392643987@163.com registry.cn-beijing.aliyuncs.com -p Zc994606871
       - docker  build -t registry.cn-beijing.aliyuncs.com/huanmengerkong/test:${DRONE_COMMIT_SHA:0:8} -f Dockerfile .
       - docker  images
