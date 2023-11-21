@@ -45,7 +45,5 @@ steps:
         - ${DRONE_COMMIT_SHA:0:8}
         - latest
       dockerfile: Dockerfile
-      username: 
-        from_secret: "18392643987@163.com"
-      password: 
-        from_secret: "Zc994606871"
+      username: 18392643987@163.com
+      password: Zc994606871
