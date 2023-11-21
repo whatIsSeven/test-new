@@ -25,6 +25,7 @@ steps:
      - ls
      - go mod download
      - go build -o test
-     - go test
+     - echo "又来到了查看目录的地方了"
+     - ls
      - echo "走到这个地方了"
      - pwd
