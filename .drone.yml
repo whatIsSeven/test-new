@@ -9,6 +9,7 @@ services:
     image: docker:dind
     privileged: true
     environment: 
+      DOCKER_HOST: tcp://docker:2375
       DOCKER_TLS_CERTDIR: ""
     commands: 
       - sleep 5
@@ -51,7 +52,7 @@ steps:
   - name: build_and_push
     image: docker
     environment: 
-      fDOCKER_HOST: tcp://docker:2375  # 通过这种方式连接到 Docker service
+      DOCKER_HOST: tcp://docker:2375  # 通过这种方式连接到 Docker service
       DOCKER_USERNAME: 
         from_secret: docker_username
       DOCKER_PASSWORD: 
