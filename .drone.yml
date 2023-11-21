@@ -30,13 +30,18 @@ steps:
       - echo "走到这个地方了"
       - pwd
       - echo ${DRONE_COMMIT_SHA:0:8}
+  - name: prepare tag
+    image: alpine
+    commands: 
+      - export SHORT_SHA=$(echo ${DRONE_COMMIT_SHA} | cut -c 1-8)
+      - echo ${SHORT_SHA}
 
   - name: docker-push-server-1
     image: plugins/docker
     settings: 
       repo: registry.cn-beijing.aliyuncs.com/18392643987@163.com/test
       tags: 
-        - ${DRONE_COMMIT_SHA:0:16}
+        - ${SHORT_SHA}
         - latest
       dockerfile: Dockerfile
       username: 
