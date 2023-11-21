@@ -22,7 +22,7 @@ steps:
   commands:
      - echo -n ${docker_username} | sha256sum
      - echo -n ${docker_password} | sha256sum
-     - cd test
+     - ls
      - go mod download
      - go build -o test
      - go test
