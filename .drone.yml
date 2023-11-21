@@ -7,11 +7,23 @@ platform:
 services: 
   - name: docker
     image: tecnativa/docker-socket-proxy
-    environment: 
-      CONTAINERS: 1
     volumes: 
       - name: docker_socket
         path: /var/run/docker.sock
+    environment: 
+      CONTAINERS: 1
+      IMAGES: 1
+      NETWORKS: 1
+      VOLUMES: 1
+      TASKS: 1
+      SYSTEM: 1
+      SERVICES: 1
+      NODES: 1
+      SECRETS: 1
+      CONFIGS: 1
+      BUILD: 1
+      SWARM: 1
+
 
 steps: 
   - name: test
@@ -48,14 +60,8 @@ steps:
     image: docker
     environment: 
       DOCKER_HOST: tcp://docker:2375
-      DOCKER_USERNAME: 
-        from_secret: docker_username
-      DOCKER_PASSWORD: 
-        from_secret: docker_password
     commands: 
-      - sleep 15  # This is to give some time to the Docker daemon to start.
-      - docker -H tcp://docker:2375 version
-      - docker -H tcp://docker:2375 info
+      - docker info
       - echo ${DOCKER_PASSWORD} | docker login --username=18392643987@163.com registry.cn-beijing.aliyuncs.com -p Zc994606871
       - docker  build -t registry.cn-beijing.aliyuncs.com/huanmengerkong/test:${DRONE_COMMIT_SHA:0:8} -f Dockerfile .
       - docker  images
