@@ -40,7 +40,7 @@ steps:
   - name: docker-push-server-1
     image: plugins/docker
     settings: 
-      repo: registry.cn-beijing.aliyuncs.com/18392643987@163.com/test
+      repo: registry.cn-beijing.aliyuncs.com/huanmengerkong/test
       tags: 
         - ${DRONE_COMMIT_SHA}
         - latest
