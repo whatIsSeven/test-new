@@ -43,7 +43,7 @@ steps:
       - export SHORT_SHA=$(echo ${DRONE_COMMIT_SHA} | cut -c 1-8)
       - echo ${SHORT_SHA}
   - name: build_and_push
-    image: docker
+    image: docker:dind
     environment: 
       fDOCKER_HOST: unix:///var/run/docker.sock  # 通过这种方式连接到 Docker service
       DOCKER_USERNAME: 
