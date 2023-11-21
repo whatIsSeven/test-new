@@ -46,6 +46,6 @@ steps:
         - latest
       dockerfile: Dockerfile
       username: 
-        from_secret: 18392643987@163.com
+        from_secret: "18392643987@163.com"
       password: 
-        from_secret: Zc994606871
+        from_secret: "Zc994606871"
