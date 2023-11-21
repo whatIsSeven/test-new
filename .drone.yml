@@ -33,17 +33,18 @@ steps:
   - name: prepare tag
     image: alpine
     commands: 
-      - echo ${DRONE_COMMIT_SHA}
+      - echo ${DRONE_COMMIT_SHA:0:8}
       - export SHORT_SHA=$(echo ${DRONE_COMMIT_SHA} | cut -c 1-8)
       - echo ${SHORT_SHA}
-
-  - name: docker-push-server-1
-    image: plugins/docker
-    settings: 
-      repo: registry.cn-beijing.aliyuncs.com/huanmengerkong/test
-      tags: 
-        - ${DRONE_COMMIT_SHA:0:8}
-        - latest
-      dockerfile: Dockerfile
-      username: 18392643987@163.com
-      password: Zc994606871
+  - name: build_and_push
+    image: docker
+    commands: 
+      - echo ${DOCKER_PASSWORD} | docker login --username=18392643987@163.com registry.cn-beijing.aliyuncs.com -p Zc994606871
+      - docker build -t registry.cn-beijing.aliyuncs.com/huanmengerkong/test:${DRONE_COMMIT_SHA:0:8} -f Dockerfile .
+      - docker images
+      - docker push registry.cn-beijing.aliyuncs.com/huanmengerkong/test:${DRONE_COMMIT_SHA:0:8}
+    environment: 
+      DOCKER_USERNAME: 
+        from_secret: docker_username
+      DOCKER_PASSWORD: 
+        from_secret: docker_password
