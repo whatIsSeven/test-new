@@ -45,17 +45,17 @@ steps:
   - name: build_and_push
     image: docker
     environment: 
-      fDOCKER_HOST: tcp://docker:2376  # 通过这种方式连接到 Docker service
+      fDOCKER_HOST: unix:///var/run/docker.sock  # 通过这种方式连接到 Docker service
       DOCKER_USERNAME: 
         from_secret: docker_username
       DOCKER_PASSWORD: 
         from_secret: docker_passwordf
     commands: 
-      - docker -H tcp://docker:2376 info
+      - docker  info
       - echo ${DOCKER_PASSWORD} | docker login --username=18392643987@163.com registry.cn-beijing.aliyuncs.com -p Zc994606871
-      - docker -H tcp://docker:2376 build -t registry.cn-beijing.aliyuncs.com/huanmengerkong/test:${DRONE_COMMIT_SHA:0:8} -f Dockerfile .
-      - docker -H tcp://docker:2376 images
-      - docker -H tcp://docker:2376 push registry.cn-beijing.aliyuncs.com/huanmengerkong/test:${DRONE_COMMIT_SHA:0:8}
+      - docker  build -t registry.cn-beijing.aliyuncs.com/huanmengerkong/test:${DRONE_COMMIT_SHA:0:8} -f Dockerfile .
+      - docker  images
+      - docker  push registry.cn-beijing.aliyuncs.com/huanmengerkong/test:${DRONE_COMMIT_SHA:0:8}
 
 volumes: 
   - name: dockersock
