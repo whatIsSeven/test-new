@@ -6,18 +6,13 @@ platform:
   arch: arm64
 services: 
   - name: docker
-    image: docker:dind
-    privileged: true
+    image: tecnativa/docker-socket-proxy
     environment: 
-      DOCKER_HOST: tcp://docker:2375
-      DOCKER_TLS_CERTDIR: ""
-    commands: 
-      - sleep 5
-      - docker version
-      - docker info
+      CONTAINERS: 1
     volumes: 
-      - name: dockersock
-        path: /var/run
+      - name: docker_socket
+        path: /var/run/docker.sock
+
 steps: 
   - name: test
     image: golang
@@ -52,11 +47,11 @@ steps:
   - name: build_and_push
     image: docker
     environment: 
-      DOCKER_HOST: tcp://docker:2375  # 通过这种方式连接到 Docker service
+      DOCKER_HOST: tcp://docker:2375
       DOCKER_USERNAME: 
         from_secret: docker_username
       DOCKER_PASSWORD: 
-        from_secret: docker_passwordf
+        from_secret: docker_password
     commands: 
       - sleep 15  # This is to give some time to the Docker daemon to start.
       - docker -H tcp://docker:2375 version
@@ -67,5 +62,6 @@ steps:
       - docker  push registry.cn-beijing.aliyuncs.com/huanmengerkong/test:${DRONE_COMMIT_SHA:0:8}
 
 volumes: 
-  - name: dockersock
-    temp: {}
+  - name: docker_socket
+    host: 
+      path: /var/run/docker.sock
