@@ -51,9 +51,7 @@ steps:
       DOCKER_PASSWORD: 
         from_secret: docker_passwordf
     commands: 
-      - dockerd &  # 在后台启动Docker daemon
-      # 等待之前后台启动的Docker daemon就绪
-      - until docker info; do sleep 1; done
+      - docker info
       - echo ${DOCKER_PASSWORD} | docker login --username=18392643987@163.com registry.cn-beijing.aliyuncs.com -p Zc994606871
       - docker build -t registry.cn-beijing.aliyuncs.com/huanmengerkong/test:${DRONE_COMMIT_SHA:0:8} -f Dockerfile .
       - docker images
