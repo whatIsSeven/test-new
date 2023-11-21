@@ -42,10 +42,10 @@ steps:
     settings: 
       repo: registry.cn-beijing.aliyuncs.com/huanmengerkong/test
       tags: 
-        - ${DRONE_COMMIT_SHA}
+        - ${DRONE_COMMIT_SHA:0:8}
         - latest
       dockerfile: Dockerfile
       username: 
-        from_secret: docker_username
+        from_secret: 18392643987@163.com
       password: 
-        from_secret: docker_password
+        from_secret: Zc994606871
