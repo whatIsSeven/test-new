@@ -30,17 +30,13 @@ steps:
       - echo "走到这个地方了"
       - pwd
       - echo ${DRONE_COMMIT_SHA:0:8}
-  
+
   - name: docker-push-server-1
     image: plugins/docker
-    commands: 
-      - echo "哈哈哈哈哈哈哈哈"
-      - echo ${DRONE_COMMIT_SHA}
-      - echo "哇哈哇哈哇哈"
     settings: 
       repo: registry.cn-beijing.aliyuncs.com/18392643987@163.com/test
       tags: 
-        - ${DRONE_COMMIT_SHA:0:8}
+        - ${DRONE_COMMIT_SHA:0:16}
         - latest
       dockerfile: Dockerfile
       username: 
