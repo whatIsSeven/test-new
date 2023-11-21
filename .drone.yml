@@ -4,7 +4,13 @@ name: default
 platform: 
   os: linux
   arch: arm64
-
+services: 
+  - name: docker
+    image: docker:dind
+    privileged: true
+    volumes: 
+      - name: dockersock
+        path: /var/run
 steps: 
   - name: test
     image: golang
@@ -47,4 +53,7 @@ steps:
       DOCKER_USERNAME: 
         from_secret: docker_username
       DOCKER_PASSWORD: 
-        from_secret: docker_password
+        from_secret: docker_passwordf
+volumes: 
+  - name: dockersock
+    temp: {}
