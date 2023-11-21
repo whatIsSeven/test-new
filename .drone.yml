@@ -33,6 +33,7 @@ steps:
   - name: prepare tag
     image: alpine
     commands: 
+      - echo ${DRONE_COMMIT_SHA}
       - export SHORT_SHA=$(echo ${DRONE_COMMIT_SHA} | cut -c 1-8)
       - echo ${SHORT_SHA}
 
@@ -41,7 +42,7 @@ steps:
     settings: 
       repo: registry.cn-beijing.aliyuncs.com/18392643987@163.com/test
       tags: 
-        - ${SHORT_SHA}
+        - ${DRONE_COMMIT_SHA}
         - latest
       dockerfile: Dockerfile
       username: 
