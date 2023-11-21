@@ -1,25 +1,25 @@
 kind: pipeline
 name: default
 
-platform:
+platform: 
   os: linux
   arch: arm64
 
-steps:
+steps: 
   - name: test
     image: golang
-    environment:
-      DOCKER_USERNAME:
+    environment: 
+      DOCKER_USERNAME: 
         from_secret: docker_username
-      DOCKER_PASSWORD:
+      DOCKER_PASSWORD: 
         from_secret: docker_password
-    commands:
+    commands: 
       - echo "hahah" 
       - echo -n $DOCKER_USERNAME
       - echo -n $DOCKER_PASSWORD
   - name: build-go-1
     image: golang
-    commands:
+    commands: 
       - echo -n ${docker_username}
       - echo -n ${docker_password} | sha256sum
       - ls
@@ -29,16 +29,21 @@ steps:
       - ls
       - echo "走到这个地方了"
       - pwd
-
+      - echo ${DRONE_COMMIT_SHA:0:8}
+  
   - name: docker-push-server-1
     image: plugins/docker
-    settings:
+    commands: 
+      - echo "哈哈哈哈哈哈哈哈"
+      - echo ${DRONE_COMMIT_SHA}
+      - echo "哇哈哇哈哇哈"
+    settings: 
       repo: registry.cn-beijing.aliyuncs.com/18392643987@163.com/test
-      tags:
+      tags: 
         - ${DRONE_COMMIT_SHA:0:8}
         - latest
       dockerfile: Dockerfile
-      username:
+      username: 
         from_secret: docker_username
-      password:
+      password: 
         from_secret: docker_password
