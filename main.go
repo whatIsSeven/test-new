@@ -13,7 +13,7 @@ func HelloHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello World")
 }
 
-//$ sudo 
+//$ sudo docker login --username=18392643987@163.com registry.cn-beijing.aliyuncs.com
 
 func main() {
 	http.HandleFunc("/", HelloHandler)
