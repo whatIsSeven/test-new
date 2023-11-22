@@ -1,0 +1,48 @@
+kind: pipeline # 定义对象类型，还有secret和signature两种类型
+type: docker # 定义流水线类型，还有kubernetes、exec、ssh等类型
+name: drone-miaosha # 定义流水线名称  可以正常运行
+platform: 
+  os: linux
+  arch: arm64
+steps: 
+  - name: test
+    image: golang
+    commands: 
+      - echo "hahah" 
+  - name: build-go-1
+    image: golang
+    commands: 
+      - echo -n ${docker_username}
+      - echo -n ${docker_password} | sha256sum
+      - ls
+      - go mod download
+      - go build -o test
+      - echo "又来到了查看目录的地方了"
+      - ls
+      - echo "走到这个地方了"
+      - pwd
+      - echo ${DRONE_COMMIT_SHA:0:8}
+  - name: build-push-image
+    pull: if-not-exists  # 如果镜像不存在则拉取,免去每次都要重新下载
+    image: plugins/docker #选择docker:dind镜像
+    volumes: 
+      - name: docker-sock
+        path: /var/run/docker.sock #映射宿主机Docker
+    settings: 
+      registry: registry.cn-beijing.aliyuncs.com
+      repo: registry.cn-beijing.aliyuncs.com/huanmengerkong/test
+      tags: v2
+      dockfile: ./Dockerfile
+      username: 18392643987@163.com
+      password: Zc994606871
+
+volumes: 
+  - name: docker-sock
+    host: 
+      path: /var/run/docker.sock
+
+# 可限制哪些分支可以推送自动CICD
+trigger: 
+  branch: 
+    - master
+

@@ -4,27 +4,6 @@ name: default
 platform: 
   os: linux
   arch: arm64
-services: 
-  - name: docker
-    image: tecnativa/docker-socket-proxy
-    volumes: 
-      - name: docker_socket
-        path: /var/run/docker.sockf
-    environment: 
-      CONTAINERS: 1
-      IMAGES: 1
-      NETWORKS: 1
-      VOLUMES: 1
-      TASKS: 1
-      SYSTEM: 1
-      SERVICES: 1
-      NODES: 1
-      SECRETS: 1
-      CONFIGS: 1
-      BUILD: 1
-      SWARM: 1
-
-
 steps: 
   - name: test
     image: golang
@@ -56,25 +35,11 @@ steps:
       - echo ${DRONE_COMMIT_SHA:0:8}
       - export SHORT_SHA=$(echo ${DRONE_COMMIT_SHA} | cut -c 1-8)
       - echo ${SHORT_SHA}
-  - name: build and push image
-    pull: if-not-exists # 如果镜像不存在则拉取,免去每次都要重新下载
-    image: plugins/docker #选择docker:dind镜像
+  - name: build_and_push
+    image: plugins/docker
     volumes: 
       - name: docker-sock
         path: /var/run/docker.sock#映射宿主机Docker
-    settings: 
-      registry: registry.cn-hangzhou.aliyuncs.com
-      repo: registry.cn-hangzhou.aliyuncs.com/huningfei/welcome
-      tags: latest
-      dockfile: ./Dockerfile
-      username: 
-        from_secret: docker_username
-      password: 
-        from_secret: docker_password
-  - name: build_and_push
-    image: docker
-    environment: 
-      DOCKER_HOST: tcp://docker:2375
     commands: 
       - docker info
       - echo ${DOCKER_PASSWORD} | docker login --username=18392643987@163.com registry.cn-beijing.aliyuncs.com -p Zc994606871
@@ -83,6 +48,6 @@ steps:
       - docker  push registry.cn-beijing.aliyuncs.com/huanmengerkong/test:${DRONE_COMMIT_SHA:0:8}
 
 volumes: 
-  - name: docker_socket
+  - name: docker-sock
     host: 
       path: /var/run/docker.sock
