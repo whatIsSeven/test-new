@@ -1,42 +1,11 @@
-kind: pipeline
-name: default
-
-platform: 
-  os: linux
-  arch: arm64
-services: 
-  - name: docker
-    image: tecnativa/docker-socket-proxy
-    volumes: 
-      - name: docker_socket
-        path: /var/run/docker.sock
-    environment: 
-      CONTAINERS: 1
-      IMAGES: 1
-      NETWORKS: 1
-      VOLUMES: 1
-      TASKS: 1
-      SYSTEM: 1
-      SERVICES: 1
-      NODES: 1
-      SECRETS: 1
-      CONFIGS: 1
-      BUILD: 1
-      SWARM: 1
-
-
+kind: pipeline # 定义对象类型，还有secret和signature两种类型
+type: docker # 定义流水线类型，还有kubernetes、exec、ssh等类型
+name: drone-miaosha # 定义流水线名称
 steps: 
   - name: test
     image: golang
-    environment: 
-      DOCKER_USERNAME: 
-        from_secret: docker_username
-      DOCKER_PASSWORD: 
-        from_secret: docker_password
     commands: 
       - echo "hahah" 
-      - echo -n $DOCKER_USERNAME
-      - echo -n $DOCKER_PASSWORD
   - name: build-go-1
     image: golang
     commands: 
@@ -50,24 +19,27 @@ steps:
       - echo "走到这个地方了"
       - pwd
       - echo ${DRONE_COMMIT_SHA:0:8}
-  - name: prepare tag
-    image: alpine
-    commands: 
-      - echo ${DRONE_COMMIT_SHA:0:8}
-      - export SHORT_SHA=$(echo ${DRONE_COMMIT_SHA} | cut -c 1-8)
-      - echo ${SHORT_SHA}
-  - name: build_and_push
-    image: docker
-    environment: 
-      DOCKER_HOST: tcp://docker:2375
-    commands: 
-      - docker info
-      - echo ${DOCKER_PASSWORD} | docker login --username=18392643987@163.com registry.cn-beijing.aliyuncs.com -p Zc994606871
-      - docker  build -t registry.cn-beijing.aliyuncs.com/huanmengerkong/test:${DRONE_COMMIT_SHA:0:8} -f Dockerfile .
-      - docker  images
-      - docker  push registry.cn-beijing.aliyuncs.com/huanmengerkong/test:${DRONE_COMMIT_SHA:0:8}
+  - name: build-push-image
+    pull: if-not-exists  # 如果镜像不存在则拉取,免去每次都要重新下载
+    image: plugins/docker #选择docker:dind镜像
+    volumes: 
+      - name: docker-sock
+        path: /var/run/docker.sock #映射宿主机Docker
+    settings: 
+      registry: registry.cn-beijing.aliyuncs.com
+      repo: registry.cn-beijing.aliyuncs.com/huanmengerkong/test
+      tags: v2
+      dockfile: ./Dockerfile
+      username: 18392643987@163.com
+      password: Zc994606871
 
 volumes: 
-  - name: docker_socket
+  - name: docker-sock
     host: 
       path: /var/run/docker.sock
+
+# 可限制哪些分支可以推送自动CICD
+trigger: 
+  branch: 
+    - master
+
