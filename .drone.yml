@@ -31,11 +31,16 @@ steps:
       - name: docker-sock
         path: /var/run/docker.sock     #映射宿主机Docker
     commands: 
+      - export DOCKER_CLI_EXPERIMENTAL=enabled
       - docker info
+      - docker buildx version
       - docker login --username=18392643987@163.com registry.cn-beijing.aliyuncs.com -p Zc994606871
-      - docker  build -t registry.cn-beijing.aliyuncs.com/huanmengerkong/test:${DRONE_COMMIT_SHA:0:8} -f ./Dockerfile .
+      #- docker  build -t registry.cn-beijing.aliyuncs.com/huanmengerkong/test:${DRONE_COMMIT_SHA:0:8} -f ./Dockerfile .
       - docker  images
-      - docker  push registry.cn-beijing.aliyuncs.com/huanmengerkong/test:${DRONE_COMMIT_SHA:0:8}
+      #- docker  push registry.cn-beijing.aliyuncs.com/huanmengerkong/test:${DRONE_COMMIT_SHA:0:8}
+      - docker buildx build --platform linux/amd64,linux/arm64 --push -t registry.cn-beijing.aliyuncs.com/huanmengerkong/test:${DRONE_COMMIT_SHA:0:8} .
+      - docker  images
+
 
 volumes: 
   - name: docker-sock

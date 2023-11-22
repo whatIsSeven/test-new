@@ -1,0 +1,95 @@
+kind: pipeline # 定义对象类型，还有secret和signature两种类型
+type: docker # 定义流水线类型，还有kubernetes、exec、ssh等类型
+name: drone-miaosha # 定义流水线名称
+
+steps: # 定义流水线执行步骤，这些步骤将顺序执行
+    - name: build-package # 流水线名称
+      image: maven:3.8.4 # 定义创建容器的Docker镜像
+      volumes: # 将容器内目录挂载到宿主机，仓库需要开启Trusted设置
+          - name: maven-build
+            path: /root/.m2 # 将应用打包好的Jar和执行脚本挂载出来
+
+      commands: 
+          - mvn clean install
+      # 将打包后的jar包，拷贝到挂载目录
+          - cp /root/.m2/repository/com/huningfei/demo/0.0.1-SNAPSHOT/*.jar  ./
+
+
+
+# 构建docker镜像并推送
+    - name: build and push image
+      pull: if-not-exists # 如果镜像不存在则拉取,免去每次都要重新下载
+      image: plugins/docker #选择docker:dind镜像
+      volumes: 
+          - name: docker-sock
+            path: /var/run/docker.sock #映射宿主机Docker
+      settings: 
+          registry: registry.cn-hangzhou.aliyuncs.com
+          repo: registry.cn-hangzhou.aliyuncs.com/huningfei/welcome
+          tags: latest
+          dockfile: ./Dockerfile
+          username: 
+              from_secret: docker_username
+          password: 
+              from_secret: docker_password
+
+
+
+     # 步骤3 使用ssh访问主机,拉去镜像并运行部署
+    - name: deploy
+      pull: if-not-exists # 如果镜像不存在则拉取,免去每次都要重新下载
+      image: appleboy/drone-ssh 
+      settings: 
+   # 需要部署的主机地址
+          host: 192.168.2.45
+   # 主机ssh端口
+          port: 22
+    # 主机登陆用户名
+          username: root
+          password: 
+    # 从drone仓库配置中秘密空间读取密码
+              from_secret: ssh_pwd
+          script: 
+              - echo "=========暂停并删除旧容器========"
+              - docker stop test-demo && docker rm test-demo
+              - echo "=========删除旧镜像============="
+              - docker rmi registry.cn-hangzhou.aliyuncs.com/huningfei/welcome:latest 
+              - echo "========从harbor拉取最新镜像========"
+              - docker pull registry.cn-hangzhou.aliyuncs.com/huningfei/welcome:latest 
+              - echo "===============运行镜像=========="
+              - docker run --name test-demo -p 8081:8081 -d registry.cn-hangzhou.aliyuncs.com/huningfei/welcome:latest
+              - echo "========部署成功========"                                                     
+
+
+
+    - name: notify      # 步骤4 部署完成，邮件通知
+      pull: if-not-exists # 如果镜像不存在则拉取,免去每次都要重新下载
+      image: drillster/drone-email
+      settings: 
+          recipients_only: true # 只发送给指定邮件收件人，不默认发送给流水线创建人
+          host: smtp.qq.com      #SMTP服务器 例如 smtp.qq.com
+          port: 465   #SMTP服务端口  例如QQ邮箱端口465
+          subject: "Drone Build Complete!"
+          username: 
+              from_secret: qqmail_username
+          password: 
+              from_secret: qqmail_pwd
+          from: 
+              from_secret: qqmail_username
+          recipients: huningfei@126.com           #收件人邮箱
+      when: #执行条件
+          status: 
+              - success
+              - changed
+              - failure
+
+volumes: 
+    - name: docker-sock
+      host: 
+          path: /var/run/docker.sock
+
+# 可限制哪些分支可以推送自动CICD
+trigger: 
+    branch: 
+        - master
+

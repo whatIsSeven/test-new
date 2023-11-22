@@ -1,21 +1,11 @@
 kind: pipeline
+type: docker
 name: default
-
+#### 自动使用命令创建
 platform: 
   os: linux
   arch: arm64
 steps: 
-  - name: test
-    image: golang
-    environment: 
-      DOCKER_USERNAME: 
-        from_secret: docker_username
-      DOCKER_PASSWORD: 
-        from_secret: docker_password
-    commands: 
-      - echo "hahah" 
-      - echo -n $DOCKER_USERNAME
-      - echo -n $DOCKER_PASSWORD
   - name: build-go-1
     image: golang
     commands: 
@@ -39,11 +29,11 @@ steps:
     image: plugins/docker
     volumes: 
       - name: docker-sock
-        path: /var/run/docker.sock#映射宿主机Docker
+        path: /var/run/docker.sock     #映射宿主机Docker
     commands: 
       - docker info
-      - echo ${DOCKER_PASSWORD} | docker login --username=18392643987@163.com registry.cn-beijing.aliyuncs.com -p Zc994606871
-      - docker  build -t registry.cn-beijing.aliyuncs.com/huanmengerkong/test:${DRONE_COMMIT_SHA:0:8} -f Dockerfile .
+      - docker login --username=18392643987@163.com registry.cn-beijing.aliyuncs.com -p Zc994606871
+      - docker  build -t registry.cn-beijing.aliyuncs.com/huanmengerkong/test:${DRONE_COMMIT_SHA:0:8} -f ./Dockerfile .
       - docker  images
       - docker  push registry.cn-beijing.aliyuncs.com/huanmengerkong/test:${DRONE_COMMIT_SHA:0:8}
 
