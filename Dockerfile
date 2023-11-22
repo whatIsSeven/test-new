@@ -1,10 +1,23 @@
-FROM alpine
+# 阶段 1：为 amd64 构建应用
+FROM --platform=linux/amd64 golang AS builder-amd64
+WORKDIR /src
+COPY . .
+RUN GOOS=linux GOARCH=amd64 go build -o app-amd64 ./test
 
-# 设置工作目录
+# 阶段 2：为 arm64 构建应用
+FROM --platform=linux/arm64 golang AS builder-arm64
+WORKDIR /src
+COPY . .
+RUN GOOS=linux GOARCH=arm64 go build -o app-arm64 ./test
+
+# 阶段 3：为 amd64 创建运行时镜像
+FROM --platform=linux/amd64 alpine AS runtime-amd64
 WORKDIR /app
+COPY --from=builder-amd64 /src/app-amd64 ./app
+CMD ["/app/app"]
 
-# 把你的可执行文件添加到 Docker 镜像中
-COPY ./test /app/test
-
-# 设置当 Docker 镜像启动时运行的命令
-CMD ["/app/test"]
+# 阶段 4：为 arm64 创建运行时镜像
+FROM --platform=linux/arm64 alpine AS runtime-arm64
+WORKDIR /app
+COPY --from=builder-arm64 /src/app-arm64 ./app
+CMD ["/app/app"]
