@@ -39,6 +39,8 @@ steps:
       platforms: 
         - linux/arm64
         - linux/amd64
+      commands: 
+        - docker buildx version
 
 trigger: 
   branch: 
