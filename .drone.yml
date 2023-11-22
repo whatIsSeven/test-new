@@ -35,7 +35,7 @@ steps:
       dockfile: ./Dockerfile
       tags: 
         - latest
-        - 0.0.3
+        - 0.0.6
       platforms: 
         - linux/arm64
         - linux/amd64
