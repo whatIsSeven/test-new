@@ -27,6 +27,8 @@ steps:
   - name: docker-buildx
     image: thegeeklab/drone-docker-buildx
     privileged: true
+    commands: 
+      - docker buildx version
     settings: 
       registry: registry.cn-beijing.aliyuncs.com
       username: 18392643987@163.com
@@ -39,9 +41,6 @@ steps:
       platforms: 
         - linux/arm64
         - linux/amd64
-      commands: 
-        - docker buildx version
-
 trigger: 
   branch: 
     - master
