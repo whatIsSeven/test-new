@@ -24,7 +24,7 @@ steps:
       - echo "走到这个地方了"
       - pwd
       - echo ${DRONE_COMMIT_SHA:0:8}
-  - name: docker
+  - name: docker-buildx
     image: thegeeklab/drone-docker-buildx
     privileged: true
     settings: 
@@ -32,7 +32,7 @@ steps:
       username: 18392643987@163.com
       password: Zc994606871
       repo: registry.cn-beijing.aliyuncs.com/huanmengerkong/test
-      dockfile: ./Dockerfile
+      dockerfile: ./Dockerfile
       tags: 
         - latest
         - 0.0.6
