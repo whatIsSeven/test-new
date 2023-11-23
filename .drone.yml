@@ -37,7 +37,7 @@ steps:
       repo: 18392643987/test
       dockerfile: ./Dockerfile
       tags: 
-        - ${date %+s}
+        - 0.0.12
       platforms: 
         - linux/arm64
         - linux/amd64
