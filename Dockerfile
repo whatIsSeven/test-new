@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 golang:alpine AS builder-amd64
+FROM --platform=linux/amd64 golang:1.19 AS builder-amd64
 WORKDIR /src
 COPY . .
 RUN go mod tidy
@@ -10,7 +10,7 @@ COPY --from=builder-amd64 /app /app
 CMD ["/app"]
 
 # 阶段 3：为 arm64 构建应用
-FROM --platform=linux/arm64 golang:alpine AS builder-arm64
+FROM --platform=linux/arm64 golang:1.19 AS builder-arm64
 WORKDIR /src
 COPY . .
 RUN go mod tidy
