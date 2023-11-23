@@ -29,6 +29,7 @@ steps:
     privileged: true
     #commands:
      # - docker buildx version
+      #- docker
     settings: 
       registry: registry.cn-beijing.aliyuncs.com
       username: 18392643987@163.com
@@ -36,8 +37,8 @@ steps:
       repo: registry.cn-beijing.aliyuncs.com/huanmengerkong/test
       dockerfile: ./Dockerfile
       tags: 
-        - latest
-        - 0.0.6
+        - 0.0.8
+        - 0.0.7
       platforms: 
         - linux/arm64
         - linux/amd64
