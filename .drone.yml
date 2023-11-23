@@ -37,8 +37,7 @@ steps:
       repo: 18392643987/test
       dockerfile: ./Dockerfile
       tags: 
-        - 0.0.9
-        - 0.0.10
+        - 0.0.11
       platforms: 
         - linux/arm64
         - linux/amd64
