@@ -31,10 +31,10 @@ steps:
      # - docker buildx version
       #- docker
     settings: 
-      registry: registry.cn-beijing.aliyuncs.com
-      username: 18392643987@163.com
+      #registry: registry.cn-beijing.aliyuncs.com
+      username: 18392643987
       password: Zc994606871
-      repo: registry.cn-beijing.aliyuncs.com/huanmengerkong/test
+      repo: 18392643987/test
       dockerfile: ./Dockerfile
       tags: 
         - 0.0.9
