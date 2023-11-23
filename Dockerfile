@@ -1,6 +1,9 @@
-FROM golang:1.20 AS builder
+FROM golang:1.19-alpine3.18 AS builder
 WORKDIR /src
 COPY . .
-RUN go mod download
-RUN go build -o /app && ls -l /
+RUN go mod tidy
+RUN go build -o /app
+
+FROM alpine:3.18 AS runtime
+COPY --from=builder /app /app
 CMD ["/app"]
