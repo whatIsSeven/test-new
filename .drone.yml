@@ -31,7 +31,7 @@ steps:
      # - docker buildx version
       #- docker
     settings: 
-      #registry: registry.cn-beijing.aliyuncs.com
+      #registry: registry.cn-beijing.aliyuncs.com  # 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
       username: 18392643987
       password: Zc994606871
       repo: 18392643987/test
